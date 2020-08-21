@@ -1,89 +1,96 @@
 const wrapper = document.querySelector(".container");
+const stopwatchDisplay = document.querySelector(".stopwatch");
+const replayButton = document.querySelector("#replay");
 
 const cardData = [
   {
     id: 0,
-    text: "pizza",
-    background: "https://source.unsplash.com/1600x900/?pizza",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?forest",
   },
   {
     id: 1,
-    text: "drink",
-    background: "https://source.unsplash.com/1600x900/?drink",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?ocean",
   },
   {
     id: 2,
-    text: "pasta",
-    background: "https://source.unsplash.com/1600x900/?pasta",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?snow",
   },
   {
     id: 3,
-    text: "hamburger",
-    background: "https://source.unsplash.com/1600x900/?hamburger",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?grass",
   },
   {
     id: 4,
-    text: "cheese",
-    background: "https://source.unsplash.com/1600x900/?cheese",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?desert",
   },
   {
     id: 5,
-    text: "sausage",
-    background: "https://source.unsplash.com/1600x900/?sausage",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?mountains",
   },
   {
     id: 6,
-    text: "hotdog",
-    background: "https://source.unsplash.com/1600x900/?hotdog",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?tundra",
   },
   {
     id: 7,
-    text: "ice cream",
-    background: "https://source.unsplash.com/1600x900/?icecream",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?swamp",
   },
   {
     id: 0,
-    text: "pizza",
-    background: "https://source.unsplash.com/1600x900/?pizza",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?forest",
   },
   {
     id: 1,
-    text: "drink",
-    background: "https://source.unsplash.com/1600x900/?drink",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?ocean",
   },
   {
     id: 2,
-    text: "pasta",
-    background: "https://source.unsplash.com/1600x900/?pasta",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?snow",
   },
   {
     id: 3,
-    text: "hamburger",
-    background: "https://source.unsplash.com/1600x900/?hamburger",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?grass",
   },
   {
     id: 4,
-    text: "cheese",
-    background: "https://source.unsplash.com/1600x900/?cheese",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?desert",
   },
   {
     id: 5,
-    text: "sausage",
-    background: "https://source.unsplash.com/1600x900/?sausage",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?mountains",
   },
   {
     id: 6,
-    text: "hotdog",
-    background: "https://source.unsplash.com/1600x900/?hotdog",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?tundra",
   },
   {
     id: 7,
-    text: "ice cream",
-    background: "https://source.unsplash.com/1600x900/?icecream",
+    text: "",
+    background: "https://source.unsplash.com/1600x900/?swamp",
   },
 ];
 
-// TODO: Shuffle the data first
+let shown = [];
+let click = 0;
+let playing = false;
+let matches = 0;
+let timer;
+let pause = false;
 
 function shuffleCards(array) {
   var currentIndex = array.length,
@@ -101,11 +108,13 @@ function shuffleCards(array) {
 }
 
 const shuffledList = shuffleCards(cardData);
-console.log(shuffledList);
 
-const cardList = cardData
-  .map((card) => {
-    return `
+function setBoard() {
+  const newBoard = shuffleCards(cardData);
+
+  const cardList = newBoard
+    .map((card) => {
+      return `
     <div class="card" >
       <div class="card-inner" data-id="${card.id}">
         <div class="card-front">
@@ -114,11 +123,11 @@ const cardList = cardData
         </div>
       </div>
     </div>`;
-  })
-  .join("");
+    })
+    .join("");
 
-let shown = [];
-let click = 0;
+  wrapper.innerHTML = cardList;
+}
 
 function flipCard(card) {
   if (card.style.transform === "rotateY(180deg)") {
@@ -128,19 +137,25 @@ function flipCard(card) {
   }
 }
 
-function compareCards(list) {
-  let match;
+function disableCards() {
+  shown.forEach((item) => {
+    item.children[1].style.filter = "grayscale(50%)";
+    item.removeEventListener("click", handleClick);
+  });
+}
 
-  console.clear();
-  console.log(list);
+function compareCards(list) {
+  toggleEvents();
+  let match;
 
   if (list[0].dataset.id === list[1].dataset.id) {
     match = true;
-    shown.forEach((item) => {
-      item.children[1].style.filter = "grayscale(50%)";
-      item.removeEventListener("click", handleClick);
-    });
-    console.log("match");
+    disableCards();
+    matches++;
+    if (matches === 8) {
+      stopPlaying();
+    }
+    console.log("match" + matches);
   } else {
     match = false;
     shown.forEach((item) => {
@@ -152,30 +167,83 @@ function compareCards(list) {
   return match;
 }
 
+function restart() {
+  location.reload();
+}
+
+function stopPlaying() {
+  console.log("YOU WIN!!!");
+  playing = false;
+  stopwatchDisplay.textContent = "Total Time: " + stopwatchDisplay.textContent;
+  toggleStopwatch(playing);
+  replayButton.style.visibility = "visible";
+}
+
+function startPlaying() {
+  if (!playing) {
+    playing = true;
+    toggleStopwatch(playing);
+  }
+}
+
 function handleClick(e) {
-  console.log("fired");
+  startPlaying();
+
   const el = this;
 
   if (shown.length > 0 && this === shown[0]) {
     console.log("click something else");
   } else {
-    if (click === 0) {
-      flipCard(el);
-      shown.push(this);
-      click++;
+    shown.push(this);
+    if (shown.length > 2) {
+      return;
     } else {
       flipCard(el);
-      shown.push(this);
-      setTimeout(function () {
-        compareCards(shown);
-      }, 1000);
-      click = 0;
+      if (click === 0) {
+        click++;
+      } else {
+        click = 0;
+        toggleEvents();
+        setTimeout(function () {
+          compareCards(shown);
+        }, 1000);
+      }
     }
   }
 }
 
-wrapper.innerHTML = cardList;
+function toggleStopwatch(gameState) {
+  clearInterval(timer);
+  if (gameState) {
+    const start = Date.now();
+
+    timer = setInterval(() => {
+      const now = Date.now();
+      const secondsPassed = Math.round((now - start) / 1000);
+
+      const minutes = Math.floor(secondsPassed / 60);
+      const seconds = secondsPassed % 60;
+
+      const display = `${minutes < 10 ? "0" : ""}${minutes}:${
+        seconds < 10 ? "0" : ""
+      }${seconds}`;
+      stopwatchDisplay.textContent = display;
+    }, 1000);
+  }
+}
+
+function toggleEvents() {
+  pause = !pause;
+  if (pause) {
+    cards.forEach((card) => card.removeEventListener("click", handleClick));
+  } else {
+    cards.forEach((card) => card.addEventListener("click", handleClick));
+  }
+}
+
+setBoard();
 
 const cards = document.querySelectorAll(".card-inner");
 
 cards.forEach((card) => card.addEventListener("click", handleClick));
+replayButton.addEventListener("click", restart);

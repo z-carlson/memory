@@ -62,7 +62,19 @@ h1 {
 }
 
 .card-front {
-  background-image: url("https://source.unsplash.com/1600x900/?nature");
+  /* background: rgb(71, 3, 139);
+  background: radial-gradient(
+    circle,
+    rgb(71, 71, 71) 0%,
+    rgba(17, 0, 34, 1) 100%
+  ); */
+  background: radial-gradient(
+    circle,
+    rgb(71, 71, 71) 0%,
+    rgba(17, 0, 34, 1) 100%
+  );
+  background: url("https://source.unsplash.com/1600x900/?space");
+
   color: black;
 }
 
@@ -73,4 +85,19 @@ h1 {
 
 img {
   width: 100%;
+}
+
+.stopwatch {
+  display: block;
+  color: white;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+#replay {
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+  visibility: hidden;
 }

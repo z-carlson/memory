@@ -94,7 +94,7 @@ let matches = 0;
 let timer;
 let pause = false;
 let secondsPassed = 0;
-let currentBest;
+let currentBest = JSON.parse(localStorage.getItem("bestTime")) || 10000;
 let avg;
 
 function shuffleCards(array) {
@@ -183,6 +183,7 @@ function stopPlaying() {
   playing = false;
   toggleStopwatch(playing);
   setBestTime();
+  getBestTime();
   replayButton.style.visibility = "visible";
 }
 
@@ -201,27 +202,33 @@ function stopPlaying() {
 
 // }
 
-function getBestTime() {
-  if (localStorage.getItem("bestTime")) {
-    currentBest = JSON.parse(localStorage.getItem("bestTime"));
-    console.log("got best: ", currentBest);
-  } else {
-    localStorage.setItem("bestTime", JSON.stringify(secondsPassed));
-  }
+function formatBestTime(timeString) {
+  let time = parseInt(timeString);
 
-  const minutes = Math.floor(currentBest / 60);
-  const seconds = currentBest % 60;
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
 
   bestTime.textContent = `${minutes < 10 ? "0" : ""}${minutes}:${
     seconds < 10 ? "0" : ""
   }${seconds}`;
 }
 
+function getBestTime() {
+  if (localStorage.getItem("bestTime")) {
+    currentBest = JSON.parse(localStorage.getItem("bestTime"));
+    formatBestTime(currentBest);
+  } else {
+    localStorage.setItem("bestTime", "10000");
+  }
+}
+
 function setBestTime() {
-  let currentBest = parseInt(localStorage.getItem("bestTime"));
+  let currentBest = parseInt(JSON.parse(localStorage.getItem("bestTime")));
+  console.log("current best: ", currentBest);
 
   if (secondsPassed < currentBest) {
-    localStorage.setItem("bestTime", `${secondsPassed}`);
+    console.log("compare: ", secondsPassed, currentBest);
+    localStorage.setItem("bestTime", JSON.stringify(secondsPassed));
   }
 
   getBestTime();

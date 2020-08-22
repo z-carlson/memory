@@ -203,9 +203,10 @@ function stopPlaying() {
 
 function getBestTime() {
   if (localStorage.getItem("bestTime")) {
-    currentBest = parseInt(localStorage.getItem("bestTime"));
+    currentBest = JSON.parse(localStorage.getItem("bestTime"));
+    console.log("got best: ", currentBest);
   } else {
-    localStorage.setItem("bestTime", secondsPassed.toString());
+    localStorage.setItem("bestTime", JSON.stringify(secondsPassed));
   }
 
   const minutes = Math.floor(currentBest / 60);
@@ -222,7 +223,8 @@ function setBestTime() {
   if (secondsPassed < currentBest) {
     localStorage.setItem("bestTime", `${secondsPassed}`);
   }
-  // getBestTime();
+
+  getBestTime();
 }
 
 function startPlaying() {

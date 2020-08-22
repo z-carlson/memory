@@ -1,6 +1,8 @@
 const wrapper = document.querySelector(".container");
-const stopwatchDisplay = document.querySelector(".stopwatch");
+const stopwatchDisplay = document.querySelector("#stopwatch");
 const replayButton = document.querySelector("#replay");
+const averageTime = document.querySelector("#average");
+const bestTime = document.querySelector("#bestTime");
 
 const cardData = [
   {
@@ -91,6 +93,9 @@ let playing = false;
 let matches = 0;
 let timer;
 let pause = false;
+let secondsPassed = 0;
+let currentBest;
+let avg;
 
 function shuffleCards(array) {
   var currentIndex = array.length,
@@ -139,7 +144,9 @@ function flipCard(card) {
 
 function disableCards() {
   shown.forEach((item) => {
-    item.children[1].style.filter = "grayscale(50%)";
+    item.children[1].style.filter = "brightness(80%)";
+    item.children[1].style.filter = "grayscale(80%)";
+
     item.removeEventListener("click", handleClick);
   });
 }
@@ -174,9 +181,48 @@ function restart() {
 function stopPlaying() {
   console.log("YOU WIN!!!");
   playing = false;
-  stopwatchDisplay.textContent = "Total Time: " + stopwatchDisplay.textContent;
   toggleStopwatch(playing);
+  setBestTime();
   replayButton.style.visibility = "visible";
+}
+
+// function getAvg() {
+//   let historicalTimes = [];
+
+//   if (localStorage.getItem("history")) {
+//     historicalTimes = parseInt(localStorage.getItem("history"));
+//     console.log(historicalTimes);
+//   } else {
+//     localStorage.setItem("history", "0");
+//   }
+// }
+
+// function setAvg() {
+
+// }
+
+function getBestTime() {
+  if (localStorage.getItem("bestTime")) {
+    currentBest = parseInt(localStorage.getItem("bestTime"));
+  } else {
+    localStorage.setItem("bestTime", secondsPassed.toString());
+  }
+
+  const minutes = Math.floor(currentBest / 60);
+  const seconds = currentBest % 60;
+
+  bestTime.textContent = `${minutes < 10 ? "0" : ""}${minutes}:${
+    seconds < 10 ? "0" : ""
+  }${seconds}`;
+}
+
+function setBestTime() {
+  let currentBest = parseInt(localStorage.getItem("bestTime"));
+
+  if (secondsPassed < currentBest) {
+    localStorage.setItem("bestTime", `${secondsPassed}`);
+  }
+  // getBestTime();
 }
 
 function startPlaying() {
@@ -219,7 +265,7 @@ function toggleStopwatch(gameState) {
 
     timer = setInterval(() => {
       const now = Date.now();
-      const secondsPassed = Math.round((now - start) / 1000);
+      secondsPassed = Math.round((now - start) / 1000);
 
       const minutes = Math.floor(secondsPassed / 60);
       const seconds = secondsPassed % 60;
@@ -242,6 +288,7 @@ function toggleEvents() {
 }
 
 setBoard();
+getBestTime();
 
 const cards = document.querySelectorAll(".card-inner");
 

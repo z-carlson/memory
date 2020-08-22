@@ -8,13 +8,14 @@ body {
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
-  padding: 2rem;
+  padding: 1rem;
   background-color: rgb(26, 26, 26);
 }
 
 h1 {
-  margin-top: 3rem;
-  font-size: 5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  font-size: 4rem;
   margin-bottom: 0.5rem;
   text-align: center;
   color: white;
@@ -25,6 +26,7 @@ h1 {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
   gap: 10px 10px;
+  margin-top: 0.5rem;
 }
 
 .card {
@@ -87,15 +89,33 @@ img {
   width: 100%;
 }
 
-.stopwatch {
-  display: block;
+#times {
   color: white;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#headings,
+#records {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+#headings {
+  font-weight: 600;
+}
+
+#headings span,
+#records span {
+  width: 20vw;
   text-align: center;
 }
 
 #replay {
+  margin-top: 1rem;
   padding: 1rem;
   font-weight: 600;
   font-size: 1.25rem;

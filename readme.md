@@ -1,6 +1,6 @@
 # Memory
 
-This is vanilla JavaScript implementation of the game Memory. Flip two cards at time to look for matches. The game ends when you've found all of the matching pairs.
+This is vanilla JavaScript implementation of the game Memory. Flip two cards at a time to look for matches. The game ends when you've found all of the matching pairs.
 
 The game uses localStorage to track the player's best time and average time.
 

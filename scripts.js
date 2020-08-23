@@ -1,91 +1,10 @@
+import { cardData } from "./data.js";
+
 const wrapper = document.querySelector(".container");
 const stopwatchDisplay = document.querySelector("#stopwatch");
 const replayButton = document.querySelector("#replay");
 const averageTime = document.querySelector("#average");
 const bestTime = document.querySelector("#bestTime");
-
-const cardData = [
-  {
-    id: 0,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?lion",
-  },
-  {
-    id: 1,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?tiger",
-  },
-  {
-    id: 2,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?zebra",
-  },
-  {
-    id: 3,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?elephant",
-  },
-  {
-    id: 4,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?rhino",
-  },
-  {
-    id: 5,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?bear",
-  },
-  {
-    id: 6,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?shark",
-  },
-  {
-    id: 7,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?deer",
-  },
-  {
-    id: 0,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?lion",
-  },
-  {
-    id: 1,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?tiger",
-  },
-  {
-    id: 2,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?zebra",
-  },
-  {
-    id: 3,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?elephant",
-  },
-  {
-    id: 4,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?rhino",
-  },
-  {
-    id: 5,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?bear",
-  },
-  {
-    id: 6,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?shark",
-  },
-  {
-    id: 7,
-    text: "",
-    background: "https://source.unsplash.com/1600x900/?deer",
-  },
-];
 
 let shown = [];
 let click = 0;
@@ -111,8 +30,6 @@ function shuffleCards(array) {
   }
   return array;
 }
-
-const shuffledList = shuffleCards(cardData);
 
 function setBoard() {
   const newBoard = shuffleCards(cardData);
@@ -162,18 +79,17 @@ function compareCards(list) {
     if (matches === 8) {
       stopPlaying();
     }
-    console.log("match" + matches);
   } else {
     match = false;
     shown.forEach((item) => {
       flipCard(item);
-    }),
-      console.log("no match");
+    });
   }
   shown = [];
   return match;
 }
 
+// this isn't great but it works for now. Shouldn't have to request the page again.
 function restart() {
   location.reload();
 }
@@ -189,13 +105,13 @@ function stopPlaying() {
   replayButton.style.visibility = "visible";
 }
 
-function formatAverageTime(timeString) {
-  let time = parseInt(timeString);
+function formatTime(string, element) {
+  let time = parseInt(string);
 
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
 
-  averageTime.textContent = `${minutes < 10 ? "0" : ""}${minutes}:${
+  element.textContent = `${minutes < 10 ? "0" : ""}${minutes}:${
     seconds < 10 ? "0" : ""
   }${seconds}`;
 }
@@ -205,12 +121,12 @@ function getAverageTime() {
   if (times.length > 0) {
     console.log("length: ", times.length);
 
-    let averageTime = (arr) =>
+    let avg = (arr) =>
       arr.reduce((a, b) => {
         return a + parseInt(b);
       }, 0) / arr.length;
 
-    formatAverageTime(Math.floor(averageTime(times)));
+    formatTime(Math.floor(avg(times)), averageTime);
   }
 }
 
@@ -220,24 +136,13 @@ function updateHistory() {
   localStorage.setItem("historicalTimes", JSON.stringify(historicalTimes));
 }
 
-function formatBestTime(timeString) {
-  let time = parseInt(timeString);
-
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-
-  bestTime.textContent = `${minutes < 10 ? "0" : ""}${minutes}:${
-    seconds < 10 ? "0" : ""
-  }${seconds}`;
-}
-
 function getBestTime() {
   if (
     localStorage.getItem("bestTime") &&
     localStorage.getItem("bestTime") != "10000"
   ) {
     currentBest = JSON.parse(localStorage.getItem("bestTime"));
-    formatBestTime(currentBest);
+    formatTime(currentBest, bestTime);
   } else {
     localStorage.setItem("bestTime", "10000");
   }

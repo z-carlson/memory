@@ -265,10 +265,14 @@ function startPlaying() {
 function handleClick(e) {
   startPlaying();
 
+  let classes = [...e.target.classList];
+
   const el = this;
 
   if (shown.length > 0 && this === shown[0]) {
     console.log("click something else");
+  } else if (classes.includes("card-back")) {
+    return;
   } else {
     shown.push(this);
     if (shown.length > 2) {

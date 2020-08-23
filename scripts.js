@@ -95,7 +95,7 @@ let timer;
 let pause = false;
 let secondsPassed = 0;
 let currentBest = JSON.parse(localStorage.getItem("bestTime")) || 10000;
-let avg;
+let historicalTimes = JSON.parse(localStorage.getItem("historicalTimes")) || [];
 
 function shuffleCards(array) {
   var currentIndex = array.length,
@@ -184,23 +184,41 @@ function stopPlaying() {
   toggleStopwatch(playing);
   setBestTime();
   getBestTime();
+  updateHistory();
+  getAverageTime();
   replayButton.style.visibility = "visible";
 }
 
-// function getAvg() {
-//   let historicalTimes = [];
+function formatAverageTime(timeString) {
+  let time = parseInt(timeString);
 
-//   if (localStorage.getItem("history")) {
-//     historicalTimes = parseInt(localStorage.getItem("history"));
-//     console.log(historicalTimes);
-//   } else {
-//     localStorage.setItem("history", "0");
-//   }
-// }
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
 
-// function setAvg() {
+  averageTime.textContent = `${minutes < 10 ? "0" : ""}${minutes}:${
+    seconds < 10 ? "0" : ""
+  }${seconds}`;
+}
 
-// }
+function getAverageTime() {
+  let times = historicalTimes;
+  if (times.length > 0) {
+    console.log("length: ", times.length);
+
+    let averageTime = (arr) =>
+      arr.reduce((a, b) => {
+        return a + parseInt(b);
+      }, 0) / arr.length;
+
+    formatAverageTime(Math.floor(averageTime(times)));
+  }
+}
+
+function updateHistory() {
+  historicalTimes.push(secondsPassed);
+
+  localStorage.setItem("historicalTimes", JSON.stringify(historicalTimes));
+}
 
 function formatBestTime(timeString) {
   let time = parseInt(timeString);
@@ -214,7 +232,10 @@ function formatBestTime(timeString) {
 }
 
 function getBestTime() {
-  if (localStorage.getItem("bestTime")) {
+  if (
+    localStorage.getItem("bestTime") &&
+    localStorage.getItem("bestTime") != "10000"
+  ) {
     currentBest = JSON.parse(localStorage.getItem("bestTime"));
     formatBestTime(currentBest);
   } else {
@@ -298,6 +319,7 @@ function toggleEvents() {
 
 setBoard();
 getBestTime();
+getAverageTime();
 
 const cards = document.querySelectorAll(".card-inner");
 
